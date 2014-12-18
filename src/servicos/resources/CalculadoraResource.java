@@ -4,6 +4,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.xml.ws.ResponseWrapper;
 
 import servicos.interfaces.ICalculadoraResources;
 import servicos.logic.Calculadora;
@@ -58,7 +61,14 @@ public class CalculadoraResource implements ICalculadoraResources{
 	@Produces("application/json")
 	@Override
 	public String calcularDivisao(@PathParam("n1") double n1,@PathParam("n2") double n2) throws MyException {
-		return ESPACAMENTO +"Divisao: "+ String.valueOf(calcula.Divisao(n1, n2));
+		String divisao;
+		try {
+			divisao = String.valueOf(calcula.Divisao(n1, n2));
+		} catch (MyException e) {
+			e.printStackTrace();
+			throw new WebApplicationException(Response.status(400).entity("Bad Request 400").build());
+		}
+		return ESPACAMENTO +"Divisao: "+ divisao;
 	}
 
 	@GET
